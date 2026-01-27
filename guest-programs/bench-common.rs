@@ -20,6 +20,11 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
         core::arch::asm!("ud2", options(noreturn));
     }
 
+    #[cfg(target_arch = "aarch64")]
+    unsafe {
+        core::arch::asm!("brk #0x1", options(noreturn));
+    }
+
     #[cfg(target_os = "solana")]
     unsafe {
         core::hint::unreachable_unchecked();
