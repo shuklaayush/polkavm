@@ -105,6 +105,15 @@ unsafe extern "C" fn memset(dst: *mut u8, value: i32, n: usize) -> *mut u8 {
     dst
 }
 
+// For native host builds, link against system libc for memory intrinsics
+#[cfg(all(not(target_env = "polkavm"), not(target_os = "solana"), not(target_ckb_vm), not(target_family = "wasm"), target_os = "macos"))]
+#[link(name = "System")]
+extern "C" {}
+
+#[cfg(all(not(target_env = "polkavm"), not(target_os = "solana"), not(target_ckb_vm), not(target_family = "wasm"), not(target_os = "macos")))]
+#[link(name = "c")]
+extern "C" {}
+
 #[cfg(target_os = "solana")]
 #[no_mangle]
 extern "C" fn sol_memcpy_(dst: *mut u8, src: *const u8, n: usize) {
